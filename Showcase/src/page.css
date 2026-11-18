@@ -1,0 +1,19 @@
+/* The host page: true black, the demo centered at its design size. */
+html,
+body {
+  margin: 0;
+  background: #000;
+}
+
+.page {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.page__demo {
+  width: 100%;
+  max-width: 440px;
+}

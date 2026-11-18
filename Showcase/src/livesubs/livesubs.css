@@ -1,0 +1,627 @@
+/* LiveSubs showcase. Burnt-in Cinema Subtitles: a true black house, gray
+   surfaces, release-print yellow (#FFE14D) as the only bright thing. All rules
+   are scoped to this demo's root. */
+.ls {
+  & .ss-stage {
+    --ls-black: #000;
+    --ls-surface: #1c1c1e;
+    --ls-yellow: #ffe14d;
+    --ls-gate: #333;
+    --ls-move: cubic-bezier(0.3, 0.75, 0.1, 1);
+    --ls-sub-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    background: var(--ls-black);
+  }
+
+  /* Pinned a gutter from the top, centered, running off the bottom */
+  .ls-phone {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+  }
+
+  & .ss-stage[data-layout='compact'] .ls-phone {
+    top: 16px;
+    left: 16px;
+  }
+
+  /* ---- iOS's screen-recording pill, behind the kit's own clock ---- */
+  .ls-rec {
+    position: absolute;
+    top: 19.5px;
+    left: 38.25px;
+    z-index: 1;
+    width: 62px;
+    height: 26px;
+    border-radius: 13px;
+    background: #ff3b30;
+    opacity: 0;
+    transform: scale(0.82);
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+
+  .ls-rec[data-on] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ---- Screens: one app goes home as the other opens ---- */
+  .ls-screen {
+    position: absolute;
+    inset: 0;
+    background: var(--ls-black);
+    transform-origin: 50% 60%;
+    will-change: transform;
+    transition: opacity 0.42s ease 0.12s, transform 0.55s var(--ls-move) 0.12s;
+  }
+
+  .ls-screen[data-away] {
+    opacity: 0;
+    transform: scale(0.88);
+    transition: opacity 0.3s ease, transform 0.45s var(--ls-move);
+  }
+
+  /* ---- LiveSubs ---- */
+  .ls-title {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 41px;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  /* The in-app frame, built like the floating one: the gate (its hairline
+     edge) is its own layer and the lettering another, so the frame can hand
+     over to the PiP shape without carrying words through a resize */
+  .ls-frame {
+    position: absolute;
+  }
+
+  .ls-frame__gate {
+    position: absolute;
+    inset: 0;
+    display: block;
+    box-shadow: inset 0 0 0 1px var(--ls-gate);
+  }
+
+  .ls-badge {
+    position: absolute;
+    top: 10px;
+    left: 13px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 18px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+  }
+
+  .ls-badge--pip {
+    display: grid;
+  }
+
+  .ls-badge--pip > span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ls-badge--pip > span[data-on] {
+    opacity: 1;
+    transition-delay: 0.15s;
+  }
+
+  .ls-badge--app {
+    top: 12px;
+    left: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ls-badge--app[data-on] {
+    opacity: 1;
+  }
+
+  /* Subtitle lettering: Helvetica Bold, a thin black edge as on etched prints */
+  .ls-sub {
+    position: absolute;
+    display: grid;
+    align-items: end;
+    font-family: var(--ls-sub-font);
+    font-weight: 700;
+    line-height: 1.18;
+    text-align: center;
+    text-wrap: balance;
+    color: #fff;
+    text-shadow:
+      1px 1px 0 #000,
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      0 1px 0 #000,
+      0 -1px 0 #000;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+  }
+
+  .ls-sub[data-on] {
+    opacity: 1;
+  }
+
+  .ls-sub--app {
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    font-size: 21px;
+  }
+
+  .ls-sub--app .ls-line {
+    color: var(--ls-yellow);
+  }
+
+  .ls-sub--pip {
+    right: 12px;
+    bottom: 11px;
+    left: 12px;
+    height: calc(17px * 1.18 * 2);
+    font-size: 17px;
+  }
+
+  /* Each sentence holds the two lines at the foot; a settled one rises out */
+  .ls-line {
+    grid-area: 1 / 1;
+    transition: transform 0.5s var(--ls-move), opacity 0.32s ease;
+  }
+
+  .ls-line[data-rolled] {
+    opacity: 0;
+    transform: translateY(-70%);
+    transition: transform 0.5s var(--ls-move), opacity 0.24s ease;
+  }
+
+  .ls-w {
+    color: #fff;
+    opacity: 0;
+    filter: blur(2px);
+    transition: opacity 0.26s ease, filter 0.26s ease, color 0.45s ease;
+  }
+
+  .ls-w[data-on] {
+    opacity: 1;
+    filter: none;
+  }
+
+  .ls-w[data-done] {
+    color: var(--ls-yellow);
+  }
+
+  /* The leader and its caption */
+  .ls-control {
+    position: absolute;
+    top: 322px;
+    right: 0;
+    left: 0;
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+  }
+
+  .ls-leader {
+    position: relative;
+    display: block;
+    width: 184px;
+    height: 184px;
+    border-radius: 50%;
+    will-change: transform;
+    transition: transform 0.18s ease;
+  }
+
+  .ls-leader[data-pressed] {
+    transform: scale(0.96);
+  }
+
+  .ls-leader__face {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .ls-leader__disc {
+    fill: #171717;
+  }
+
+  .ls-leader__line,
+  .ls-leader__inner {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 1;
+  }
+
+  .ls-leader__sweep {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(rgba(255, 225, 77, 0.2) 0deg 100deg, transparent 100deg);
+    opacity: 0;
+    animation: ls-turn 1.4s linear infinite;
+    transition: opacity 0.3s ease;
+  }
+
+  .ls-leader[data-mode='loading'] .ls-leader__sweep {
+    opacity: 1;
+  }
+
+  .ls-leader__ring,
+  .ls-leader__breath {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .ls-leader__ring {
+    box-shadow: inset 0 0 0 2px #474747;
+    transition: box-shadow 0.35s ease;
+  }
+
+  .ls-leader[data-mode='running'] .ls-leader__ring {
+    box-shadow: inset 0 0 0 4px var(--ls-yellow);
+  }
+
+  /* While running, a second ring breathes outward with the audio */
+  .ls-leader__breath {
+    box-shadow: inset 0 0 0 2px rgba(255, 225, 77, 0.35);
+    opacity: 0;
+    animation: ls-breath 1.9s ease-in-out infinite;
+    transition: opacity 0.4s ease;
+  }
+
+  .ls-leader[data-mode='running'] .ls-leader__breath {
+    opacity: 1;
+  }
+
+  .ls-leader__label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--ls-yellow);
+  }
+
+  .ls-leader__stack {
+    display: grid;
+    justify-items: center;
+    gap: 9px;
+    font-family: var(--ls-sub-font);
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 25px;
+  }
+
+  .ls-leader[data-mode='loading'] .ls-leader__stack {
+    color: #bfbfbf;
+  }
+
+  .ls-leader[data-mode='running'] .ls-leader__stack {
+    color: #fff;
+  }
+
+  .ls-status {
+    font-size: 15px;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.72);
+    text-align: center;
+  }
+
+  /* Stock inset-grouped rows below, in the app's gray */
+  .ls-list {
+    position: absolute;
+    top: 586px;
+    right: 16px;
+    left: 16px;
+    display: grid;
+    padding: 6px 0;
+    border-radius: 26px;
+    background: var(--ls-surface);
+  }
+
+  .ls-seg {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 34px;
+    margin: 8px 14px 10px;
+    padding: 2px;
+    border-radius: 17px;
+    background: #2c2c2e;
+  }
+
+  .ls-seg > span {
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+  }
+
+  .ls-seg__on {
+    background: #48484a;
+  }
+
+  .ls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 48px;
+    margin: 0 16px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* ---- The video app (neutral, no brand) ---- */
+  .ls-player {
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 402px;
+    height: 226px;
+    overflow: hidden;
+    background: #3d4249;
+  }
+
+  .ls-player > span {
+    position: absolute;
+    display: block;
+  }
+
+  .ls-scene__sky {
+    inset: 0;
+    background: linear-gradient(180deg, #6a7079 0%, #50565e 55%, #3b4047 100%);
+  }
+
+  .ls-scene__sun {
+    top: 34px;
+    right: 66px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #8b9098;
+  }
+
+  .ls-scene__b {
+    bottom: 34px;
+    background: #2f343a;
+  }
+
+  .ls-scene__b1 { left: 0; width: 92px; height: 104px; }
+  .ls-scene__b2 { left: 86px; width: 70px; height: 132px; background: #353a41; }
+  .ls-scene__b3 { left: 236px; width: 88px; height: 118px; background: #353a41; }
+  /* A dome over the plaza */
+  .ls-scene__b4 { left: 310px; width: 92px; height: 96px; border-radius: 46px 46px 0 0; }
+
+  .ls-scene__street {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 36px;
+    background: #262a2f;
+  }
+
+  /* The speaker in the foreground */
+  .ls-scene__head {
+    top: 78px;
+    left: 168px;
+    width: 52px;
+    height: 60px;
+    border-radius: 50%;
+    background: #9a9fa6;
+  }
+
+  .ls-scene__body {
+    top: 136px;
+    left: 134px;
+    width: 120px;
+    height: 110px;
+    border-radius: 56px 56px 0 0;
+    background: #7c8189;
+  }
+
+  .ls-progress {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.28);
+  }
+
+  .ls-progress__fill {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: #fff;
+    transform-origin: left center;
+    transition: transform 11s linear;
+  }
+
+  .ls-meta {
+    position: absolute;
+    top: 302px;
+    left: 16px;
+    display: grid;
+    gap: 9px;
+    justify-items: start;
+  }
+
+  .ls-vtitle {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 23px;
+    color: #fff;
+  }
+
+  .ls-channel {
+    position: absolute;
+    top: 356px;
+    right: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ls-channel__avatar {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #48484a;
+  }
+
+  .ls-channel__pill {
+    display: grid;
+    place-items: center;
+    width: 86px;
+    height: 32px;
+    margin-left: auto;
+    border-radius: 16px;
+    background: var(--ls-surface);
+  }
+
+  .ls-next {
+    position: absolute;
+    right: 16px;
+    left: 16px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .ls-thumb {
+    flex: none;
+    width: 160px;
+    height: 90px;
+    border-radius: 10px;
+  }
+
+  .ls-thumb--0 { background: linear-gradient(160deg, #4b5058, #2c3036); }
+  .ls-thumb--1 { background: linear-gradient(160deg, #565049, #34302b); }
+  .ls-thumb--2 { background: linear-gradient(160deg, #46504d, #2a312f); }
+
+  .ls-next__text {
+    display: grid;
+    align-content: start;
+    gap: 8px;
+    padding-top: 4px;
+  }
+
+  /* ---- The floating frame ---- */
+  .ls-pip {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    transform-origin: 226px 497px;
+    transition: opacity 0.3s ease, transform 0.4s var(--ls-move);
+    pointer-events: none;
+  }
+
+  .ls-pip[data-state='off'] {
+    opacity: 0;
+    transition: none;
+  }
+
+  .ls-pip[data-state='closing'] {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .ls-pip__shape {
+    position: absolute;
+    display: block;
+    background: #000;
+    border-radius: 14px;
+    box-shadow:
+      inset 0 0 0 1px var(--ls-gate),
+      0 12px 32px rgba(0, 0, 0, 0.55);
+    transition:
+      left 0.62s var(--ls-move),
+      top 0.62s var(--ls-move),
+      width 0.62s var(--ls-move),
+      height 0.62s var(--ls-move),
+      border-radius 0.62s var(--ls-move);
+  }
+
+  .ls-pip__shape[data-state='docked'] {
+    border-radius: 0;
+    box-shadow: inset 0 0 0 1px var(--ls-gate);
+  }
+
+  .ls-pip__content {
+    position: absolute;
+    overflow: hidden;
+    border-radius: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ls-pip__content[data-on] {
+    opacity: 1;
+  }
+
+  /* Tapped, a PiP window shows its controls over a dim */
+  .ls-pip__controls {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .ls-pip__controls[data-on] {
+    opacity: 1;
+  }
+
+  .ls-pip__close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(118, 118, 128, 0.42);
+    color: #fff;
+    transition: transform 0.15s ease;
+  }
+
+  .ls-pip__close[data-pressed] {
+    transform: scale(0.88);
+  }
+}
+
+@keyframes ls-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ls-breath {
+  0%,
+  100% {
+    transform: scale(1.04);
+  }
+  30% {
+    transform: scale(1.11);
+  }
+  55% {
+    transform: scale(1.06);
+  }
+  75% {
+    transform: scale(1.13);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ls .ls-leader__sweep,
+  .ls .ls-leader__breath {
+    animation: none;
+  }
+}

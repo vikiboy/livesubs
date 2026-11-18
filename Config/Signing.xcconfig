@@ -1,0 +1,19 @@
+// ─────────────────────────────────────────────────────────────
+//  Signing. Don't put your own values in this file: create
+//  Config/Signing.local.xcconfig (git-ignored) with the three lines below,
+//  then run `xcodegen generate`. Bundle IDs, the App Group and the
+//  entitlements all derive from these values, so the app and its
+//  extensions always match.
+// ─────────────────────────────────────────────────────────────
+
+// Your Apple Developer Team ID (Xcode ▸ Settings ▸ Accounts). A free
+// Personal Team works for on-device installs (apps expire after 7 days).
+DEVELOPMENT_TEAM =
+
+// Must be unique for your team, e.g. com.yourname
+BUNDLE_ID_PREFIX = com.example
+
+// App Group shared by the app and the broadcast extension.
+APP_GROUP_ID = group.$(BUNDLE_ID_PREFIX).livesubs
+
+#include? "Signing.local.xcconfig"

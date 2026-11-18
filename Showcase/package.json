@@ -1,0 +1,26 @@
+{
+  "name": "livesubs-showcase",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5274 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5275 --strictPort",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lucide-react": "0.468.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^6.4.5",
+    "vite-plugin-singlefile": "^2.0.3",
+    "typescript": "^5.6.3",
+    "playwright-core": "~1.48.2",
+    "postcss": "^8.5.6"
+  }
+}
