@@ -169,3 +169,10 @@ EasyList authors and Steven Black (blocking rules), FluidInference (FluidAudio, 
 harness), Benji Taylor (Stageshow), and yuxino/osu (the idea of Picture in Picture subtitles).
 Licences and links for every dependency, model and dataset are in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Licence
+
+LiveSubs' own code is MIT licensed ([LICENSE](LICENSE)). Third-party code, models and blocking
+rules keep their own licences, listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); in
+particular the bundled EasyList/EasyPrivacy rules stay under CC BY-SA 3.0, and TranslateGemma
+is subject to the Gemma Terms of Use.
